@@ -1,0 +1,43 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 2rem;
+  background-color: #f4f4f4;
+  color: #222;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+h1,
+h2 {
+  color: #4b0082; /* Indigo */
+}
+
+.image-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.images {
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  display: block;
+}
+
+.video-frame {
+  width: 100%;
+  max-width: 100%;
+  height: 360px;
+  margin-bottom: 2rem;
+  border: none;
+  border-radius: 6px;
+}

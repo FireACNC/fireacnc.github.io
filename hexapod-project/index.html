@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Final Project - Home Pet Hexapod</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Home Pet Hexapxod</h1>
+      <h3>Tiger Huo, 16299 Final Project</h3>
+
+      <section>
+        <h2>Introduction</h2>
+        <p>
+          Imagine a small robotic companion that scuttles around your living
+          room, follows you playfully, reacts to your hand gestures, and even
+          climbs stairs to greet you. This project explores the idea of turning
+          a traditional hexapod into an intelligent, friendly home pet — one
+          that doesn't need feeding, doesn't shed hair, and is easy to clean up
+          after.
+        </p>
+        <p>
+          The goal of this project is to build off from
+          <a
+            href="https://github.com/Freenove/Freenove_Big_Hexapod_Robot_Kit_for_Raspberry_Pi.com"
+            >Freenove Hexapod</a
+          >
+          and extends its capabilities by building additional layers of
+          functionality to make it more suitable as a home pet. These fall into
+          two broad categories: low-level control, such as balancing, walking,
+          and stair climbing, and high-level recognition and automation, such as
+          detecting humans and interpreting gestures. Together, they make the
+          hexapod more than just a robot — they create a responsive and
+          semi-intelligent companion that interacts naturally with people in
+          their home.
+        </p>
+        <div class="image-wrapper">
+          <img src="media/hexapod.png" alt="Hexapod" class="images" />
+          <em>A cute hexapod.</em>
+        </div>
+      </section>
+
+      <section>
+        <h2>Basic Control</h2>
+        <p>
+          The hexapod uses a total of <strong>18 servos</strong> — three per
+          limb — allowing precise control over each joint in all six legs. Every
+          limb tip's position is computed in relative
+          <strong>(X, Y, Z)</strong> coordinates with respect to the robot's
+          body center. This allow us to apply inverse kinematics to place the
+          legs exactly where we want them.
+        </p>
+        <p>
+          The robot moves by carefully alternating which legs are lifted and
+          which remain grounded for stability. For instance, a tripod gait
+          leaves three legs down while the others reposition. Variants using
+          four or even five grounded legs offer more stability at the cost of
+          speed. All of this movement is handled through fine-grained servo
+          control and synchronized timing.
+        </p>
+        <div class="image-wrapper">
+          <img src="media/servos.png" alt="Servos on limbs" class="images" />
+          <em>Servos on each leg.</em>
+        </div>
+      </section>
+
+      <section>
+        <h2>Stair Climbing</h2>
+        <p>
+          Climbing stairs is no small feat for a hexapod of this size. Existing
+          hexapod stair climbings such as
+          <a
+            href="https://www.youtube.com/watch?v=aH07qF_bhgA&ab_channel=Zenta 
+          "
+            >this</a
+          >,
+          <a
+            href="https://www.youtube.com/watch?v=f3L8R5Vx6Z0&ab_channel=ShuoYangRobotics 
+          "
+            >this</a
+          >, or
+          <a
+            href="https://www.youtube.com/watch?v=bqy9GWGNKRE&ab_channel=AndrewHumphries 
+          "
+            >this</a
+          >
+          are either larger robots, or those with widespread weight
+          distribution. The Freenove hexapod faces unique challenges, including
+          shorter than the stair (making it more like cliff climbing), has more
+          cluttered weight allocation, and tiny foot tips that limit grip.
+        </p>
+        <p>
+          To overcome these constraints, we developed a specialized sequence of
+          movements that shift the robot's center of mass upward and forward in
+          stages. The climbing behavior mimics cliff-scaling rather than smooth
+          stair stepping. Each movement must ensure balance while lifting the
+          body up a step — an action that requires lifting nearly the entire
+          weight using just a few small servos. We also utilized the robot body
+          as a point of support when we center of mass reaches to the top of the
+          stair.
+        </p>
+        <div class="image-wrapper">
+          <img
+            src="media/stair_1.png"
+            alt="Stair Climbing Step 1"
+            class="images"
+          />
+          <img
+            src="media/stair_2.png"
+            alt="Stair Climbing Step 2"
+            class="images"
+          />
+          <em>An Illustration of Stair Climbing Stages.</em>
+        </div>
+
+        <p>
+          Here's the demo of the robot climbing a platform. This mimics a stair
+          of 15cm height. Comparing to an actual stair, this platform is
+          actually more challenging as it is hollow at the bottom and the
+          hexapod's legs might be constrained underneath.
+        </p>
+        <p>
+          The ending position is not exactly the same due to the width
+          constrains of the platform, but simply moving the hexapod forward
+          would achieve the final stage.
+        </p>
+        <iframe
+          src="https://drive.google.com/file/d/1VPtrhMG31TNMLKb2q3jld-Cxqc4VdFAJ/preview"
+          width="640"
+          height="360"
+          allow="autoplay"
+          class="video-frame"
+        >
+        </iframe>
+      </section>
+
+      <section>
+        <h2>Gesture Recognition</h2>
+        <p>
+          A key part of making the hexapod feel alive and responsive is allowing
+          it to interpret human gestures. Building off from the functionalities
+          provided from
+          <strong>MediaPipe</strong> and <strong>OpenCV</strong>, the hexapod
+          receives a live video stream from a camera, which is processed on a
+          connected client. When a recognized gesture is detected, the client
+          sends the corresponding command back to the robot.
+        </p>
+        Three main gestures have been implemented:
+        <ul>
+          <li>
+            <strong>Come:</strong> Open palm, fingers up, waving motion -
+            prompts the robot to approach.
+          </li>
+          <li>
+            <strong>Go:</strong> Open palm, fingers down, waving motion -
+            prompts the robot to back off or return.
+          </li>
+          <li>
+            <strong>Spin:</strong> Index finger extended and circling - makes
+            the robot perform a spin.
+          </li>
+        </ul>
+        <p>
+          These simple, intuitive motions let users interact with the robot
+          naturally, without needing a controller or app.
+        </p>
+        <iframe
+          src="https://drive.google.com/file/d/1v0XE-9YLhnugTQDARIqj52bP-JBjXuCF/preview"
+          width="640"
+          height="360"
+          allow="autoplay"
+          class="video-frame"
+        ></iframe>
+      </section>
+
+      <section>
+        <h2>Human Figure Following</h2>
+        <p>
+          To further increase interactivity, we implemented a human-following
+          behavior. This begins with MediaPipe's face detection model, which
+          identifies the position and size of a face in the camera feed. Using
+          the width of the detected face, along with a pre-calibrated focal
+          length, we estimate the person's distance from the robot, and
+          cross-validate the value using the onboard ultrasonic sensor. We then
+          compute the horizontal and vertical angles to the face using
+          trigonometric functions (specifically, the arctangent of the offset
+          divided by depth). These angles determine how the robot should rotate:
+          the head adjusts first to maintain gaze, but if the face moves beyond
+          the head's range of motion, the robot's body also rotates to realign
+          its posture.
+        </p>
+        <p>
+          This mechanism can work in tandem with gesture recognition, allowing
+          the hexapod to focus on one person while responding to their commands.
+          The responsiveness helps form the illusion of a pet paying attention
+          and reacting accordingly.
+        </p>
+        <iframe
+          src="https://drive.google.com/file/d/1B8FFP4wI_4zsjbX8m0xh3EYMT-BVhcHH/preview"
+          width="640"
+          height="360"
+          allow="autoplay"
+          class="video-frame"
+        ></iframe>
+      </section>
+
+      <section>
+        <h2>Summary</h2>
+        <p>
+          This project demonstrates how to transform a commercially available
+          hexapod platform into a home companion, through a mix of mechanical
+          control and computer vision. With smooth gait movement, stair
+          climbing, gesture recognition, and human figure tracking, we've made
+          progress toward making it an affordable, low-maintenance robotic pet,
+          that can moves, reacts and engages with people in natural ways.
+        </p>
+      </section>
+
+      <section>
+        <h2>Extensions and Applications</h2>
+        The project is in a rather primary phase due to limitation of time. This
+        hexapod pet can be expanded further in many interesting directions:
+        <ul>
+          <li>
+            <strong>Emotion Simulation:</strong> Use LEDs, sound, and motion
+            patterns to simulate different moods or responses.
+          </li>
+          <li>
+            <strong>Learning & Memory:</strong> Incorporate basic reinforcement
+            learning to remember common commands or routes.
+          </li>
+          <li>
+            <strong>Pet Camera:</strong> Add a remote streaming camera, making
+            the robot double as a security or pet monitor.
+          </li>
+          <li>
+            <strong>Smart Home Integration:</strong> Connect to a smart home
+            ecosystem to provide automation or alerts.
+          </li>
+          <li>
+            <strong>Alarm System:</strong> Detect and alert for unexpected
+            motion or noise when owners are away.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Acknowledgements</h2>
+        <p>
+          Big thanks to Professor Chris Atkeson for funding the entire project
+          and providing valuable insights along the way, making controlling the
+          robot and transforming it into the what I'm envisioning possible.
+        </p>
+      </section>
+    </div>
+  </body>
+</html>
